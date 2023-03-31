@@ -54,9 +54,8 @@ public class LiteSpectator extends JavaPlugin {
             p.setGameMode(GameMode.SURVIVAL);
             return true;
         } else if (p.getGameMode().equals(GameMode.SURVIVAL)) {
-            double minWaitTime = getConfigSeconds();
-            p.sendMessage("NoDamageTicks: " + p.getNoDamageTicks() + "\nWait time sec: " + minWaitTime + " tick: " + minWaitTime*20);
-            if (minWaitTime > 0 && p.getNoDamageTicks() < minWaitTime*20) {
+            double minWaitTime = getConfigSeconds() * 20;
+            if (minWaitTime > 0 && p.getNoDamageTicks() < minWaitTime) {
                 p.sendMessage("You cannot go into spectator mode within " + minWaitTime + " seconds of taking damage.");
                 return false;
             } else {
