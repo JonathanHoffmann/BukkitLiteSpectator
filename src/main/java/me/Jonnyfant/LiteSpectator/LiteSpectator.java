@@ -13,20 +13,6 @@ import java.io.File;
 import java.io.IOException;
 
 public class LiteSpectator extends JavaPlugin {
-    private final String CONFIGPATH = "noDamageSeconds";
-
-    public void onEnable() {
-        loadConfig();
-    }
-
-    public void loadConfig() {
-        getConfig().options().header(
-                "#Config for LiteSpectator by Jonnyfant.\n\n#Amount of seconds without taking damage before players can go into spectator mode (0 or negative values always allow to go into spectator mode).");
-        getConfig().addDefault(CONFIGPATH, 3.0);
-        getConfig().options().copyDefaults(true);
-        saveConfig();
-    }
-
     @Override
     public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
         if (!(sender instanceof Player)) {
@@ -34,6 +20,8 @@ public class LiteSpectator extends JavaPlugin {
             return false;
         }
         Player p = (Player) sender;
+        //if(command.getName().equals("spectate"))
+        //{
         if (p.getGameMode().equals(GameMode.SPECTATOR)) {
             File locationFile = new File(this.getDataFolder(), p.getUniqueId() + ".yml");
             if (locationFile.exists()) {
@@ -48,41 +36,35 @@ public class LiteSpectator extends JavaPlugin {
                 p.teleport(location);
             } else {
                 p.teleport(p.getBedSpawnLocation());
-                p.sendMessage(
-                        "Something went wrong and we can't find your previous location. Sending you to your bed spawn.");
+                p.sendMessage("Something went wrong and we can't find your previous location. Sending you to your bed spawn.");
             }
             p.setGameMode(GameMode.SURVIVAL);
             return true;
         } else if (p.getGameMode().equals(GameMode.SURVIVAL)) {
-            double minWaitTime = getConfigSeconds() * 20;
-            if (minWaitTime > 0 && p.getNoDamageTicks() < minWaitTime) {
-                p.sendMessage("You cannot go into spectator mode within " + minWaitTime + " seconds of taking damage.");
-                return false;
-            } else {
-                File positionFile = new File(this.getDataFolder(), p.getUniqueId() + ".yml");
-                YamlConfiguration positionSave = YamlConfiguration.loadConfiguration(positionFile);
-                positionSave.set("warpX", p.getLocation().getX());
-                positionSave.set("warpY", p.getLocation().getY());
-                positionSave.set("warpZ", p.getLocation().getZ());
-                positionSave.set("warpWorld", p.getLocation().getWorld().getName());
-                positionSave.set("warpPitch", p.getLocation().getPitch());
-                positionSave.set("warpYaw", p.getLocation().getYaw());
-                try {
-                    positionSave.save(positionFile);
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-                p.setGameMode(GameMode.SPECTATOR);
-                return true;
+            File positionFile = new File(this.getDataFolder(), p.getUniqueId() + ".yml");
+            YamlConfiguration positionSave = YamlConfiguration.loadConfiguration(positionFile);
+            positionSave.set("warpX", p.getLocation().getX());
+            positionSave.set("warpY", p.getLocation().getY());
+            positionSave.set("warpZ", p.getLocation().getZ());
+            positionSave.set("warpWorld", p.getLocation().getWorld().getName());
+            positionSave.set("warpPitch", p.getLocation().getPitch());
+            positionSave.set("warpYaw", p.getLocation().getYaw());
+            try {
+                positionSave.save(positionFile);
+            } catch (IOException e) {
+                e.printStackTrace();
             }
+            p.setGameMode(GameMode.SPECTATOR);
+            return true;
         } else {
             p.sendMessage("Something went wrong");
             return false;
         }
-    }
-
-    public double getConfigSeconds() {
-        reloadConfig();
-        return getConfig().getDouble(CONFIGPATH);
+        /*}
+        else
+        {
+            sender.sendMessage("Unknown Command");
+            return false;
+        }*/
     }
 }
