@@ -1,8 +1,0 @@
-<component name="ArtifactManager">
-  <artifact type="jar" name="LiteSpectator:jar">
-    <output-path>$PROJECT_DIR$</output-path>
-    <root id="archive" name="LiteSpectator.jar">
-      <element id="module-output" name="LiteSpectator" />
-    </root>
-  </artifact>
-</component>
